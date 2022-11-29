@@ -1,5 +1,5 @@
-import { Avatar, Container, Grid, IconButton } from "@material-ui/core";
-import { green, red } from "@material-ui/core/colors";
+import { Avatar, Button, Container, Grid, IconButton, Typography } from "@material-ui/core";
+import { green, red, yellow } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/node_modules/@material-ui/styles";
 import {
   HighlightOffTwoTone,
@@ -14,6 +14,9 @@ import CheckCircleTwoToneIcon from "@material-ui/icons/CheckCircleTwoTone";
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Stracture from "../../classes/structure";
+import Logic from "../../classes/logic";
+import ScrollDialog from "../modals/modal";
+import { Patch } from "../modals/Patch";
 var _ = require("lodash");
 
 const level_six_arr = [
@@ -23,11 +26,15 @@ const level_six_arr = [
   ["W", "B3", "W", "B4T3", "T4", "W"],
   ["W", "W", "W", "W", "W", "W"],
 ];
+const level_six = new Stracture([...level_six_arr]);
+const logic = new Logic();
+
+
 const useStyles = makeStyles({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 50,
+    marginTop: 5,
   },
   patch: {
     display: "block",
@@ -38,26 +45,26 @@ const useStyles = makeStyles({
   box: {
     background: "url(/box.jpg) ",
     backgroundSize: "cover",
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
     fontSize: 25,
   },
   wall: {
     background: "url(/wall.jpg)",
     backgroundSize: "cover",
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
   },
   target: {
     background: "url(/target.svg)",
     backgroundSize: "cover",
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
   },
   empty: {
     background: "transparent",
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
   },
   row: {
     display: "flex",
@@ -77,6 +84,12 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "center",
   },
+  flexColumns: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+  },
   title: {
     textAlign: "center",
     fontSize: 50,
@@ -85,46 +98,104 @@ const useStyles = makeStyles({
     WebkitBackgroundClip: "text",
     textFillColor: "transparent",
     marginTop: 30,
+    textDecoration: "none",
+  },
+  next_level: {
+    textAlign: "center",
+    fontSize: 50,
+    background: "linear-gradient(45deg, #f50057 30%, #eea849 90%)",
+    fontFamily: "Common Pixel , sans-serif ",
+    WebkitBackgroundClip: "text",
+    textFillColor: "transparent",
+    marginTop: 0,
+    textDecoration: "none",
   },
   winner: {
     fontSize: 200,
     fontFamily: " Nabla , cursive ",
   },
+  ISA: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  ISABtn: {
+    margin: 3,
+    fontSize: 20,
+    color: yellow[500],
+    border: "2px solid yellow",
+    borderRadius: "50%",
+  },
 });
-const level_six = new Stracture([...level_six_arr]);
-
 const Level6 = () => {
   let [currArray, SetCurArray] = useState([...level_six.currArr]);
   let [winner, SetWinner] = useState(false);
-  let [steps, setsteps] = useState(0);
+  let [steps, setsteps] = useState(-1);
   let [state, setState] = useState([[...level_six.patch]]);
   let [nextMove, SetNextMove] = useState([
     ...level_six.getNextMove(level_six.currArr),
   ]);
+  const [open, setOpen] = useState(false);
+  const [data, setData] = useState();
+
   const classes = useStyles();
+  const handleClickOpen = () => {
+    setOpen(true);
+    // setScroll(scrollType);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   let moveHandelr = (dir) => {
     level_six.currArr = [...level_six.move(dir, currArray)];
-    SetCurArray(level_six.currArr);
-  };
-  let getNextMoveHandelr = () => {
-    SetNextMove(level_six.getNextMove(currArray));
+    if (!level_six.isEqual(currArray, level_six.currArr))
+      SetCurArray(level_six.currArr);
   };
   let retry = () => {
     level_six.currArr = level_six.patch;
     level_six.boxes = _.cloneDeep(level_six.StaticBoxes);
     level_six.states = [level_six.patch];
     SetCurArray(level_six.currArr);
-    setsteps(0);
+    setsteps(-1);
     setState([level_six.patch]);
     SetWinner(false);
   };
+  // let DFSHandelr = () => {
+  //   logic.DFS(level_six);
+  //   console.log("DFS", logic.stack);
+  //   setData(logic.stack);
+  //   handleClickOpen();
+  // };
+  let DFSHandelr = () => {
+    logic.newDFS(level_six);
+    console.log("DFS", logic.finalPath);
+    setData(logic.solution);
+    handleClickOpen();
+  };
+  let BFSHandelr = () => {
+    logic.BFS(level_six);
+    console.log("BFS", logic.finalPath);
+    setData(logic.solution);
+    handleClickOpen();
+  };
+  let UCSHandelr = () => {
+    logic.UCS({element: level_six , priority : 0});
+    console.log("UCS", logic.solution);
+    setData(logic.solution);
+    handleClickOpen();
+  };
+  let AStarHandelr = () => {
+    logic.AStar({element: level_six, priority : 0});
+    console.log("Astar", logic.solution);
+    setData(logic.solution);
+    handleClickOpen();
+  };
   useEffect(() => {
-    getNextMoveHandelr();
+    SetNextMove(level_six.getNextMove(level_six.currArr));
     //is Step
-    if (level_six.isEqual(currArray, state[state.length - 1]) === false) {
-      setsteps(steps + 1);
-    }
+    setsteps(steps + 1);
     //is new State
     if (level_six.isNewState(currArray)) {
       level_six.states.push(currArray);
@@ -138,6 +209,13 @@ const Level6 = () => {
 
   return (
     <>
+      <ScrollDialog
+        openn={open}
+        handleClose={handleClose}
+        classes={classes}
+        data={data}
+        patch={level_six.patch}
+      />
       <div className="div">
         <Grid container>
           <Grid xs={1} item>
@@ -164,6 +242,20 @@ const Level6 = () => {
               <Replay fontSize={"large"} />
             </IconButton>
           </Grid>
+          <Grid xs={12} item className={classes.ISA}>
+            <Button onClick={DFSHandelr} className={classes.ISABtn}>
+              DfS
+            </Button>
+            <Button onClick={BFSHandelr} className={classes.ISABtn}>
+              BfS
+            </Button>
+            <Button onClick={UCSHandelr} className={classes.ISABtn}>
+              UCS
+            </Button>
+            <Button onClick={AStarHandelr } className={classes.ISABtn}>
+              A*
+            </Button>
+          </Grid>
         </Grid>
         {winner ? (
           <>
@@ -174,6 +266,15 @@ const Level6 = () => {
             >
               Winner
             </Grid>
+            <Typography variant={"h4"} align={"center"} color={"primary"}>
+              Steps: {steps}
+            </Typography>
+            <Grid
+              container
+              className={classes.winner}
+              justifyContent={"center"}
+            >
+            </Grid>
           </>
         ) : (
           <>
@@ -181,80 +282,7 @@ const Level6 = () => {
               <Grid container className={classes.container}>
                 <Grid item>
                   <div className={classes.patch}></div>
-                  {currArray?.map((row, i) => {
-                    return (
-                      <div className={classes.row}>
-                        {row.map((ele, i) => {
-                          if (ele === "W") {
-                            return (
-                              <Avatar
-                                variant={"square"}
-                                className={classes.wall}
-                              >
-                                {""}
-                              </Avatar>
-                            );
-                          } else if (ele === "E") {
-                            return (
-                              <Avatar
-                                variant={"square"}
-                                className={classes.empty}
-                              >
-                                {""}
-                              </Avatar>
-                            );
-                          } else if (ele[0] === "T") {
-                            return (
-                              <Avatar
-                                variant={"rounded"}
-                                className={classes.target}
-                              >
-                                {ele[1]}
-                              </Avatar>
-                            );
-                          } else if (ele.length === 2 && ele[0] === "B") {
-                            return (
-                              <>
-                                <Avatar
-                                  variant={"rounded"}
-                                  className={classes.box}
-                                >
-                                  {ele[1]}
-                                </Avatar>
-                              </>
-                            );
-                          } else if (ele.length === 4 && ele[1] === ele[3]) {
-                            return (
-                              <>
-                                <Avatar
-                                  variant={"rounded"}
-                                  className={classes.box}
-                                >
-                                  <CheckCircleTwoToneIcon
-                                    className={classes.success}
-                                  />
-                                </Avatar>
-                              </>
-                            );
-                          } else if (ele.length === 4 && ele[1] !== ele[3]) {
-                            return (
-                              <>
-                                <Avatar
-                                  variant={"rounded"}
-                                  className={classes.box}
-                                >
-                                  <HighlightOffTwoTone
-                                    className={classes.wrong}
-                                  />
-                                </Avatar>
-                              </>
-                            );
-                          }
-                        })}
-                        <br key={i} />
-                      </div>
-                    );
-                  })}
+                  <Patch currArray={currArray} classes={classes} />
                 </Grid>
               </Grid>
               <Grid container justifyContent={"center"}>
@@ -294,6 +322,15 @@ const Level6 = () => {
                   >
                     <KeyboardArrowRight className={classes.btn} />
                   </IconButton>
+                </Grid>
+                <Grid xs={12} item>
+                  <Typography
+                    variant={"h4"}
+                    align={"center"}
+                    color={"secondary"}
+                  >
+                    Steps: {steps}
+                  </Typography>
                 </Grid>
               </Grid>
             </Container>
