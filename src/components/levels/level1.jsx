@@ -25,6 +25,7 @@ import Stracture from "../../classes/structure";
 import Logic from "../../classes/logic";
 import ScrollDialog from "../modals/modal";
 import { Patch } from "../modals/Patch";
+import { useStyles } from "../../styles/useStyles";
 var _ = require("lodash");
 
 const level_one_arr = [
@@ -36,103 +37,6 @@ const level_one_arr = [
 const level_one = new Stracture([...level_one_arr]);
 const logic = new Logic();
 
-const useStyles = makeStyles({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 50,
-  },
-  patch: {
-    display: "block",
-    width: "fit-content",
-    height: "fit-conteny",
-    transition: "all 500ms",
-  },
-  box: {
-    background: "url(/box.jpg) ",
-    backgroundSize: "cover",
-    width: 90,
-    height: 90,
-    fontSize: 25,
-  },
-  wall: {
-    background: "url(/wall.jpg)",
-    backgroundSize: "cover",
-    width: 90,
-    height: 90,
-  },
-  target: {
-    background: "url(/target.svg)",
-    backgroundSize: "cover",
-    width: 90,
-    height: 90,
-  },
-  empty: {
-    background: "transparent",
-    width: 90,
-    height: 90,
-  },
-  row: {
-    display: "flex",
-  },
-  btn: {
-    fontSize: 70,
-  },
-  success: {
-    fontSize: 70,
-    color: green[500],
-  },
-  wrong: {
-    fontSize: 70,
-    color: red[500],
-  },
-  flex: {
-    display: "flex",
-    justifyContent: "center",
-  },
-  flexColumns: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
-  },
-  title: {
-    textAlign: "center",
-    fontSize: 50,
-    background: "linear-gradient(45deg, #f50057 30%, #eea849 90%)",
-    fontFamily: "Common Pixel , sans-serif ",
-    WebkitBackgroundClip: "text",
-    textFillColor: "transparent",
-    marginTop: 30,
-    textDecoration: "none",
-  },
-  next_level: {
-    textAlign: "center",
-    fontSize: 50,
-    background: "linear-gradient(45deg, #f50057 30%, #eea849 90%)",
-    fontFamily: "Common Pixel , sans-serif ",
-    WebkitBackgroundClip: "text",
-    textFillColor: "transparent",
-    marginTop: 0,
-    textDecoration: "none",
-  },
-  winner: {
-    fontSize: 200,
-    fontFamily: " Nabla , cursive ",
-  },
-  ISA: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  ISABtn: {
-    margin: 3,
-    fontSize: 20,
-    color: yellow[500],
-    border: "2px solid yellow",
-    borderRadius: "50%",
-  },
-});
 const Level1 = () => {
   let [currArray, SetCurArray] = useState([...level_one.currArr]);
   let [winner, SetWinner] = useState(false);
@@ -144,7 +48,7 @@ const Level1 = () => {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState();
 
-  const classes = useStyles();
+  const classes = useStyles(90);
   const handleClickOpen = () => {
     setOpen(true);
     // setScroll(scrollType);
@@ -181,13 +85,13 @@ const Level1 = () => {
     handleClickOpen();
   };
   let UCSHandelr = () => {
-    logic.UCS({element: level_one, priority : 0});
+    logic.UCS({ element: level_one, priority: 0 });
     console.log("UCS", logic.solution);
     setData(logic.solution);
     handleClickOpen();
   };
   let AStarHandelr = () => {
-    logic.AStar({element: level_one, priority : 0});
+    logic.AStar({ element: level_one, priority: 0 });
     console.log("Astar", logic.solution);
     setData(logic.solution);
     handleClickOpen();
@@ -218,7 +122,7 @@ const Level1 = () => {
       />
       <div className="div">
         <Grid container>
-          <Grid xs={1} item>
+          <Grid xs={12} sm={1} item>
             <IconButton>
               <NavLink className="nav_option" to="/home">
                 <ReplyIcon
@@ -231,7 +135,7 @@ const Level1 = () => {
               </NavLink>
             </IconButton>
           </Grid>
-          <Grid xs={10} item className={classes.title}>
+          <Grid xs={12} sm={10} item className={classes.title}>
             Level 1
             <IconButton
               color={"secondary"}
@@ -241,20 +145,6 @@ const Level1 = () => {
             >
               <Replay fontSize={"large"} />
             </IconButton>
-          </Grid>
-          <Grid xs={12} item className={classes.ISA}>
-            <Button onClick={DFSHandelr} className={classes.ISABtn}>
-              DfS
-            </Button>
-            <Button onClick={BFSHandelr} className={classes.ISABtn}>
-              BfS
-            </Button>
-            <Button onClick={UCSHandelr} className={classes.ISABtn}>
-              UCS
-            </Button>
-            <Button onClick={AStarHandelr} className={classes.ISABtn}>
-              A*
-            </Button>
           </Grid>
         </Grid>
         {winner ? (
@@ -292,7 +182,21 @@ const Level1 = () => {
           </>
         ) : (
           <>
-            <Container>
+            <Grid xs={12} item className={classes.ISA}>
+              <Button onClick={DFSHandelr} className={classes.ISABtn}>
+                DfS
+              </Button>
+              <Button onClick={BFSHandelr} className={classes.ISABtn}>
+                BfS
+              </Button>
+              <Button onClick={UCSHandelr} className={classes.ISABtn}>
+                UCS
+              </Button>
+              <Button onClick={AStarHandelr} className={classes.ISABtn}>
+                A*
+              </Button>
+            </Grid>
+            <Container className={classes.container}>
               <Grid container className={classes.container}>
                 <Grid item>
                   <div className={classes.patch}></div>

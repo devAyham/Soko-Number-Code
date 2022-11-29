@@ -39,8 +39,8 @@ export const Patch = ({ currArray, classes }) => {
               } else if (ele.length === 4 && ele[1] === ele[3]) {
                 return (
                   <>
-                    <Avatar variant={"rounded"} className={classes.box}>
-                      <CheckCircleTwoToneIcon className={classes.success} />
+                    <Avatar  variant={"rounded"} className={classes.box}>
+                      <CheckCircleTwoToneIcon  className={classes.success} />
                     </Avatar>
                   </>
                 );

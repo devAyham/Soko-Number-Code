@@ -15,7 +15,13 @@ import {
   ArrowUpwardOutlined,
 } from "@material-ui/icons";
 
-export default function ScrollDialog({ openn, data, handleClose, classes ,patch}) {
+export default function ScrollDialog({
+  openn,
+  data,
+  handleClose,
+  classes,
+  patch,
+}) {
   //   const [openn, setOpen] = React.useState(openn);
 
   const descriptionElementRef = React.useRef(null);
@@ -38,7 +44,7 @@ export default function ScrollDialog({ openn, data, handleClose, classes ,patch}
         aria-describedby="scroll-dialog-description"
       >
         <DialogTitle id="scroll-dialog-title">
-          Steps : {data?.path?.length} , Visited Nodes : {data?.counter} , Cost : {data?.cost}
+          Steps: {data?.path?.length} <br/> Visited Nodes: {data?.counter} <br/> {data?.cost !== 0 && ('Cost :' + data?.cost) } 
         </DialogTitle>
         <DialogContent dividers={true}>
           <DialogContentText
@@ -46,11 +52,13 @@ export default function ScrollDialog({ openn, data, handleClose, classes ,patch}
             ref={descriptionElementRef}
             tabIndex={-1}
           >
-              <Patch currArray={patch} classes={classes}/>
+            <div className={classes.flexColumns}>
+              <Patch currArray={patch} classes={classes} />
+            </div>
             {data?.path?.map((patch) => {
               return (
                 <>
-                <hr/>
+                  <hr />
                   <div className={classes.flexColumns}>
                     {patch[0] === "left" ? (
                       <ArrowBack color={"secondary"} fontSize={"large"} />

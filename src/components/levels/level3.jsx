@@ -1,5 +1,12 @@
-import { Avatar, Button, Container, Grid, IconButton, Typography } from "@material-ui/core";
-import {  green, red, yellow } from "@material-ui/core/colors";
+import {
+  Avatar,
+  Button,
+  Container,
+  Grid,
+  IconButton,
+  Typography,
+} from "@material-ui/core";
+import { green, red, yellow } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/node_modules/@material-ui/styles";
 import {
   HighlightOffTwoTone,
@@ -18,116 +25,20 @@ import { setWith } from "lodash";
 import Logic from "../../classes/logic";
 import ScrollDialog from "../modals/modal";
 import { Patch } from "../modals/Patch";
+import { useStyles } from "../../styles/useStyles";
 var _ = require("lodash");
 
 const level_three_arr = [
-  ["W", "W" , "W", "W"  , "W"],
-  ["W", "B1", "T2", "E" , "W"],
-  ["W", "W" , "E", "W"  , "W"],
-  ["W", "E" , "T1", "B2", "W"],
-  ["W", "W" , "W", "W"  , "W"],
+  ["W", "W", "W", "W", "W"],
+  ["W", "B1", "T2", "E", "W"],
+  ["W", "W", "E", "W", "W"],
+  ["W", "E", "T1", "B2", "W"],
+  ["W", "W", "W", "W", "W"],
 ];
 
 const level_three = new Stracture([...level_three_arr]);
 const logic = new Logic();
 
-const useStyles = makeStyles({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 5,
-  },
-  patch: {
-    display: "block",
-    width: "fit-content",
-    height: "fit-conteny",
-    transition: "all 500ms",
-  },
-  box: {
-    background: "url(/box.jpg) ",
-    backgroundSize: "cover",
-    width: 70,
-    height: 70,
-    fontSize: 25,
-  },
-  wall: {
-    background: "url(/wall.jpg)",
-    backgroundSize: "cover",
-    width: 70,
-    height: 70,
-  },
-  target: {
-    background: "url(/target.svg)",
-    backgroundSize: "cover",
-    width: 70,
-    height: 70,
-  },
-  empty: {
-    background: "transparent",
-    width: 70,
-    height: 70,
-  },
-  row: {
-    display: "flex",
-  },
-  btn: {
-    fontSize: 70,
-  },
-  success: {
-    fontSize: 70,
-    color: green[500],
-  },
-  wrong: {
-    fontSize: 70,
-    color: red[500],
-  },
-  flex: {
-    display: "flex",
-    justifyContent: "center",
-  },
-  flexColumns: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
-  },
-  title: {
-    textAlign: "center",
-    fontSize: 50,
-    background: "linear-gradient(45deg, #f50057 30%, #eea849 90%)",
-    fontFamily: "Common Pixel , sans-serif ",
-    WebkitBackgroundClip: "text",
-    textFillColor: "transparent",
-    marginTop: 30,
-    textDecoration: "none",
-  },
-  next_level: {
-    textAlign: "center",
-    fontSize: 50,
-    background: "linear-gradient(45deg, #f50057 30%, #eea849 90%)",
-    fontFamily: "Common Pixel , sans-serif ",
-    WebkitBackgroundClip: "text",
-    textFillColor: "transparent",
-    marginTop: 0,
-    textDecoration: "none",
-  },
-  winner: {
-    fontSize: 200,
-    fontFamily: " Nabla , cursive ",
-  },
-  ISA: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  ISABtn: {
-    margin: 3,
-    fontSize: 20,
-    color: yellow[500],
-    border: "2px solid yellow",
-    borderRadius: "50%",
-  },
-});
 const Level3 = () => {
   let [currArray, SetCurArray] = useState([...level_three.currArr]);
   let [winner, SetWinner] = useState(false);
@@ -139,7 +50,7 @@ const Level3 = () => {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState();
 
-  const classes = useStyles();
+  const classes = useStyles(70);
   const handleClickOpen = () => {
     setOpen(true);
     // setScroll(scrollType);
@@ -182,13 +93,13 @@ const Level3 = () => {
     handleClickOpen();
   };
   let UCSHandelr = () => {
-    logic.UCS({element: level_three , priority : 0});
+    logic.UCS({ element: level_three, priority: 0 });
     console.log("UCS", logic.solution);
     setData(logic.solution);
     handleClickOpen();
   };
   let AStarHandelr = () => {
-    logic.AStar({element: level_three, priority : 0});
+    logic.AStar({ element: level_three, priority: 0 });
     console.log("Astar", logic.solution);
     setData(logic.solution);
     handleClickOpen();
@@ -243,20 +154,6 @@ const Level3 = () => {
               <Replay fontSize={"large"} />
             </IconButton>
           </Grid>
-          <Grid xs={12} item className={classes.ISA}>
-            <Button onClick={DFSHandelr} className={classes.ISABtn}>
-              DfS
-            </Button>
-            <Button onClick={BFSHandelr} className={classes.ISABtn}>
-              BfS
-            </Button>
-            <Button onClick={UCSHandelr} className={classes.ISABtn}>
-              UCS
-            </Button>
-            <Button onClick={AStarHandelr} className={classes.ISABtn}>
-              A*
-            </Button>
-          </Grid>
         </Grid>
         {winner ? (
           <>
@@ -293,7 +190,21 @@ const Level3 = () => {
           </>
         ) : (
           <>
-            <Container>
+            <Grid xs={12} item className={classes.ISA}>
+              <Button onClick={DFSHandelr} className={classes.ISABtn}>
+                DfS
+              </Button>
+              <Button onClick={BFSHandelr} className={classes.ISABtn}>
+                BfS
+              </Button>
+              <Button onClick={UCSHandelr} className={classes.ISABtn}>
+                UCS
+              </Button>
+              <Button onClick={AStarHandelr} className={classes.ISABtn}>
+                A*
+              </Button>
+            </Grid>
+            <Container className={classes.container}>
               <Grid container className={classes.container}>
                 <Grid item>
                   <div className={classes.patch}></div>

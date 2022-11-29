@@ -11,6 +11,7 @@ body{
     height: 100vh;
     background: url('/public//background\ copy\ 2.svg');
     background-size: cover;
+    overflow: hidden;
 }
 .nextstep{
     display: flex;
